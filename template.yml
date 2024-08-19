@@ -1,0 +1,165 @@
+# This AWS SAM template has been generated from your function's configuration. If
+# your function has one or more triggers, note that the AWS resources associated
+# with these triggers aren't fully specified in this template and include
+# placeholder values. Open this template in AWS Application Composer or your
+# favorite IDE and modify it to specify a serverless application with other AWS
+# resources.
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: An AWS Serverless Application Model template describing your function.
+Resources:
+  crudLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Description: ''
+      MemorySize: 128
+      Timeout: 30
+      Handler: index.handler
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      EphemeralStorage:
+        Size: 512
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      Layers:
+        - !Ref Layer1
+      PackageType: Zip
+      Policies:
+        - Statement:
+            - Sid: AWSLambdaVPCAccessExecutionPermissions
+              Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                - ec2:CreateNetworkInterface
+                - ec2:DescribeNetworkInterfaces
+                - ec2:DescribeSubnets
+                - ec2:DeleteNetworkInterface
+                - ec2:AssignPrivateIpAddresses
+                - ec2:UnassignPrivateIpAddresses
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - rds:*
+                - application-autoscaling:DeleteScalingPolicy
+                - application-autoscaling:DeregisterScalableTarget
+                - application-autoscaling:DescribeScalableTargets
+                - application-autoscaling:DescribeScalingActivities
+                - application-autoscaling:DescribeScalingPolicies
+                - application-autoscaling:PutScalingPolicy
+                - application-autoscaling:RegisterScalableTarget
+                - cloudwatch:DescribeAlarms
+                - cloudwatch:GetMetricStatistics
+                - cloudwatch:PutMetricAlarm
+                - cloudwatch:DeleteAlarms
+                - cloudwatch:ListMetrics
+                - cloudwatch:GetMetricData
+                - ec2:DescribeAccountAttributes
+                - ec2:DescribeAvailabilityZones
+                - ec2:DescribeCoipPools
+                - ec2:DescribeInternetGateways
+                - ec2:DescribeLocalGatewayRouteTablePermissions
+                - ec2:DescribeLocalGatewayRouteTables
+                - ec2:DescribeLocalGatewayRouteTableVpcAssociations
+                - ec2:DescribeLocalGateways
+                - ec2:DescribeSecurityGroups
+                - ec2:DescribeSubnets
+                - ec2:DescribeVpcAttribute
+                - ec2:DescribeVpcs
+                - ec2:GetCoipPoolUsage
+                - sns:ListSubscriptions
+                - sns:ListTopics
+                - sns:Publish
+                - logs:DescribeLogStreams
+                - logs:GetLogEvents
+                - outposts:GetOutpostInstanceTypes
+                - devops-guru:GetResourceCollection
+              Resource: '*'
+            - Effect: Allow
+              Action:
+                - pi:*
+              Resource:
+                - arn:aws:pi:*:*:metrics/rds/*
+                - arn:aws:pi:*:*:perf-reports/rds/*
+            - Effect: Allow
+              Action:
+                - iam:CreateServiceLinkedRole
+              Resource: '*'
+              Condition:
+                StringLike:
+                  iam:AWSServiceName:
+                    - rds.amazonaws.com
+                    - rds.application-autoscaling.amazonaws.com
+            - Action:
+                - devops-guru:SearchInsights
+                - devops-guru:ListAnomaliesForInsight
+              Effect: Allow
+              Resource: '*'
+              Condition:
+                ForAllValues:StringEquals:
+                  devops-guru:ServiceNames:
+                    - RDS
+                'Null':
+                  devops-guru:ServiceNames: 'false'
+            - Effect: Allow
+              Action:
+                - lambda:InvokeFunction
+              Resource:
+                - '*'
+      SnapStart:
+        ApplyOn: None
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-08cabb2ca1f57b0af
+          - sg-0205c725fa3ae4b1b
+        SubnetIds:
+          - subnet-0c3736950a401157b
+          - subnet-0b15b69315ff2f5b4
+          - subnet-08cd732d974118f80
+        Ipv6AllowedForDualStack: false
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path:
+              name: /
+              url: ' '
+            Method: POST
+        Api2:
+          Type: Api
+          Properties:
+            Path:
+              name: /
+              url: ' '
+            Method: GET
+        Api3:
+          Type: Api
+          Properties:
+            Path:
+              name: /
+              url: ' '
+            Method: DELETE
+        Api4:
+          Type: Api
+          Properties:
+            Path:
+              name: /
+              url: ' '
+            Method: PUT
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto
+  # This resource represents your Layer with name librerias. To download the
+# content of your Layer, go to
+# 
+# aws.amazon.com/go/view?arn=arn%3Aaws%3Alambda%3Aus-east-2%3A732794050446%3Alayer%3Alibrerias%3A1&source=lambda
+  Layer1:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: ./librerias
+      LayerName: librerias
+      CompatibleRuntimes:
+        - nodejs20.x
